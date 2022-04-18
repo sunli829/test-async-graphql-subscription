@@ -1,0 +1,24 @@
+<html>
+
+<body>
+    <div id="value" style="font-size:32">
+    </div>
+
+    <script>
+        let ws = new WebSocket("ws://localhost:3000/ws", "graphql-ws");
+
+        ws.onopen = function () {
+            ws.send(JSON.stringify({ "type": "connection_init", "payload": {} }));
+            ws.send(JSON.stringify({ "id": "1", "type": "start", "payload": { "query": "subscription {  subscribe }" } }));
+        };
+
+        ws.onmessage = function (event) {
+            let data = JSON.parse(event.data);
+            if (data.type == "data") {
+                document.getElementById("value").innerText = data.payload.data.subscribe;
+            }
+        };
+    </script>
+</body>
+
+</html>
